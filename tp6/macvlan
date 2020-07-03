@@ -1,0 +1,9 @@
+ip link add mac0 link eth0 type macvlan mode bridge
+ip addr add 100.98.26.38/24 dev mac0
+ifconfig mac0 up
+
+docker network create -d macvlan \
+  --subnet=192.168.57.0/24 \
+  --gateway=192.168.57.1 \
+  -o parent=vboxnet0 \
+  macvlan-net

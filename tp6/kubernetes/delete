@@ -1,0 +1,9 @@
+microk8s kubectl delete ingress s-ingress
+sleep 0.1
+microk8s kubectl delete statefulset mongo
+sleep 0.1
+microk8s kubectl delete statefulset strapi
+sleep 0.1
+microk8s kubectl delete svc s-service
+sleep 0.1 
+microk8s kubectl delete svc m-service

@@ -1,0 +1,17 @@
+  address-family ipv4
+  network 172.10.2.0/24
+  network 192.168.12.0/24
+  network 192.168.23.0/24
+  network 192.168.13.0/24
+  neighbor 192.168.14.41 activate
+  neighbor 192.168.15.51 activate
+  exit-address-family
+!
+  address-family ipv6
+  network 2001:a:b:12::/64
+  network 2001:a:b:13::/64
+  network 2001:a:b:23::/64
+  network 2002:a:b:2::/64
+  neighbor 2001:a:b:14::41 activate
+  neighbor 2001:a:b:15::51 activate 
+  exit-address-family

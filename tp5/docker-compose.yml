@@ -1,0 +1,142 @@
+version: '3.1'
+
+services:
+  r1:
+    build:
+      dockerfile: images/router.dockerfile
+      context: .
+    volumes:
+      - ./volumes/quagga/r1/zebra.conf:/etc/quagga/zebra.conf:ro
+      - ./volumes/quagga/r1/ospfd.conf:/etc/quagga/ospfd.conf:ro
+      - ./volumes/quagga/r1/ospf6d.conf:/etc/quagga/ospf6d.conf:ro
+      - ./volumes/supervisord.conf:/etc/supervisord.conf:ro
+    image: ospf:20190321
+    container_name: r1
+    privileged: true
+    ports:
+      #admin
+      - 10011:2601
+    networks:
+      dns-root:
+        ipv4_address: 10.0.0.11
+      dns-local1:
+        ipv4_address: 20.0.0.11
+      dns-local2:
+        ipv4_address: 30.0.0.11
+
+  p_edu:
+    build:
+      dockerfile: images/dns.dockerfile
+      context: .
+    image: primario_edu:primario_edu
+    container_name: primario_edu
+    privileged: true
+    volumes:
+      - ./bindconfig/ns1_edu/:/etc/bind:ro
+      - ./resolv/primario_edu/resolv.conf:/etc/resolv.conf:ro
+    networks:
+      dns-local1:
+        ipv4_address: 20.0.0.15
+  p_com:
+    build:
+      dockerfile: images/dns.dockerfile
+      context: .
+    image: primario_com:primario_com
+    container_name: primario_com
+    privileged: true
+    volumes:
+      - ./bindconfig/ns1_com/:/etc/bind:ro
+      - ./resolv/primario_com/resolv.conf:/etc/resolv.conf:ro
+    networks:
+      dns-local2:
+        ipv4_address: 30.0.0.13
+  s_edu:
+    build:
+      dockerfile: images/dns.dockerfile
+      context: .
+    image: secundario_edu:secundario_edu
+    container_name: secundario_edu
+    privileged: true
+    volumes:
+      - ./bindconfig/ns2_edu/:/etc/bind:ro
+      - ./resolv/secundario_edu/resolv.conf:/etc/resolv.conf:ro
+    networks:
+      dns-local1:
+        ipv4_address: 20.0.0.14
+  root:
+    build:
+      dockerfile: images/dns.dockerfile
+      context: .
+    image: root:root
+    container_name: root
+    privileged: true
+    volumes:
+      - ./bindconfig/root/:/etc/bind:ro
+    networks:
+      dns-root:
+        ipv4_address: 10.0.0.12
+
+  pc1:
+    build:
+      dockerfile: images/host.dockerfile
+      context: .
+    image: pc1:pc1
+    container_name: pc1
+    privileged: true
+    volumes:
+      - ./resolv/pc1/resolv.conf:/etc/resolv.conf:ro
+    command: tail -f /dev/null
+    networks:
+      dns-local1:
+        ipv4_address: 20.0.0.12
+  pc2:
+    build:
+      dockerfile: images/webs.dockerfile
+      context: .
+    image: pc2:pc2
+    container_name: pc2
+    privileged: true
+    ports:
+      - 5000:5000
+    volumes:
+      - ./resolv/pc2/resolv.conf:/etc/resolv.conf:ro
+      - ./flask/app.py:/etc/app/app.py
+    command: tail -f /dev/null
+    networks:
+      dns-local1:
+        ipv4_address: 20.0.0.13
+  pc3:
+    build:
+      dockerfile: images/host.dockerfile
+      context: .
+    image: pc3:pc3
+    container_name: pc3
+    privileged: true
+    volumes:
+      - ./resolv/pc3/resolv.conf:/etc/resolv.conf:ro
+    command: tail -f /dev/null
+    networks:
+      dns-local2:
+        ipv4_address: 30.0.0.12
+
+
+
+networks:
+  dns-local1:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 20.0.0.0/24
+  dns-local2:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 30.0.0.0/24
+  dns-root:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 10.0.0.0/24

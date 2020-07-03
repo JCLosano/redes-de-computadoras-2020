@@ -1,0 +1,15 @@
+sudo sysctl -w net.ipv6.conf.all.forwarding=1
+
+sudo ip link add mac0 link eth0 type macvlan mode bridge
+
+ip addr add 100.98.26.38/24 dev mac0
+ifconfig mac0 up
+
+
+----------
+
+
+sudo ip link add mac0 type bridge
+sudo ip link set mac0 up
+sudo ip link set mac0 promisc on 
+

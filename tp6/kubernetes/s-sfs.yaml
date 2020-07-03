@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+
+kind: StatefulSet
+
+metadata:
+  name: strapi
+
+spec:
+  selector:
+    matchLabels:
+      app: strapi
+
+  serviceName: s-service
+
+  replicas: 1
+
+  template:
+    metadata:
+      labels:
+        app: strapi
+
+    spec:
+      containers: 
+      - env:
+        - name: APP_NAME
+          value: strapi-app
+        - name: DATABASE_CLIENT
+          value: mongo
+        - name: DATABASE_HOST
+          value: m-service
+        - name: DATABASE_PORT
+          value: "27017"
+        - name: DATABASE_NAME
+          value: strapi
+        - name : DATABASE_USERNAME
+          value: strapi
+        - name: DATABASE_PASSWORD
+          value: strapi
+
+        image: strapi/strapi
+        imagePullPolicy: IfNotPresent
+        name: strapi
+        ports:
+        - containerPort: 1337
+          protocol: TCP 
+        volumeMounts:
+        - mountPath: /srv/app
+          name: strapi
+
+  volumeClaimTemplates:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: strapi
+    spec:
+      accessModes:
+      - ReadWriteMany
+      resources:
+        requests:
+          storage: 1Gi
+
+---
+
+apiVersion: v1
+
+kind: Service
+
+metadata:
+  labels:
+    app: strapi
+
+  name: s-service
+
+spec:
+  type: ClusterIP
+
+  ports:
+  - name: strapi
+    port: 1337
+    protocol: TCP
+    
+  selector:
+    app: strapi

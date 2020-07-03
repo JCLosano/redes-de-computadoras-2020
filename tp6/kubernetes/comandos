@@ -1,0 +1,35 @@
+#crear namespace
+kubectl create ns <nombre de namespace>
+
+#obtener deploys, pods, servicios de namespace john
+kubectl -n john get deploy
+kubectl -n john get pods
+kubectl -n john get services
+
+#obtener descripcion de deploys, pods ,servicios de namespace john
+kubectl -n john describe deploys
+kubectl -n john describe pods
+kubectl -n john describe service
+
+#aplicar el deployment deployment.yaml en namespace john
+kubectl -n john apply -f deployment.yaml
+
+#aplicar el servicio service.yaml en namespace john
+kubectl -n john apply -f service.yaml
+
+#borrar pod de namespace john
+kubectl -n john delete pod <nombre del pod>
+
+#borrar deployment de namespace john
+kubectl -n john delete deploy <nombre del deploy> 
+
+#borrar servicio de namespace john
+kubectl -n john delete service <nombre de service>
+
+#por defecto namespace default, hacer todo en default
+
+ 1-mongo deploy
+ 2-mongo svc
+ 3-strapi deploy
+ 4-strapi svc
+ 5-ingress

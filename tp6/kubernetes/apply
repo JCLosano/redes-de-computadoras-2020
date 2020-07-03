@@ -1,0 +1,5 @@
+microk8s kubectl apply -f m-sfs.yaml
+sleep 0.1
+microk8s kubectl apply -f s-sfs.yaml
+sleep 0.1
+microk8s kubectl apply -f s-ingress.yaml

@@ -1,0 +1,106 @@
+version: '2.1'
+
+services:
+    r1:
+      build:
+        dockerfile: images/router.dockerfile
+        context: .
+      volumes:
+        - ./volumes/quagga/r1/zebra.conf:/etc/quagga/zebra.conf:ro
+        - ./volumes/quagga/r1/ospfd.conf:/etc/quagga/ospfd.conf:ro
+        - ./volumes/quagga/r1/ospf6d.conf:/etc/quagga/ospf6d.conf:ro
+        - ./volumes/supervisord.conf:/etc/supervisord.conf:ro
+      image: ospf:20190321
+      container_name: r1
+      privileged: true
+      ports:
+        #admin
+        - 10011:2601
+      networks:
+        dns-network: 
+          ipv4_address: 10.0.0.11
+          ipv6_address: 2001::11
+        hosts-network:
+          ipv4_address: 20.0.0.11
+          ipv6_address: 2002::11
+        cluster-network:
+          ipv4_address: 30.0.0.11
+          ipv6_address: 2003::11
+  
+    strapi_dns:
+      build:
+        dockerfile: images/dns.dockerfile
+        context: .
+      image: strapi_dns:strapi_dns
+      container_name: strapi_dns
+      privileged: true
+      volumes:
+        - ./bindconfig/ns1_com/:/etc/bind:ro
+      networks:
+        dns-network:
+          ipv4_address: 10.0.0.12
+          ipv6_address: 2001::12
+  
+    pc1:
+      build:
+        dockerfile: images/host.dockerfile
+        context: .
+      image: pc1:pc1
+      container_name: pc1
+      privileged: true
+      volumes:
+        - ./resolv.conf:/etc/resolv.conf:ro
+        - ./cert/strapi.crt:/strapi.crt:ro
+        - ./curl/auth.json:/auth.json:ro
+        - ./curl/post.json:/post.json:ro
+      command: tail -f /dev/null
+      networks:
+        hosts-network:
+          ipv4_address: 20.0.0.12
+          ipv6_address: 2002::12
+    pc2:
+      build:
+        dockerfile: images/host.dockerfile
+        context: .
+      image: pc2:pc2
+      container_name: pc2
+      privileged: true
+      volumes:
+        - ./resolv.conf:/etc/resolv.conf:ro
+        - ./cert/strapi.crt:/strapi.crt:ro
+        - ./curl/auth.json:/auth.json:ro
+        - ./curl/post.json:/post.json:ro
+      command: tail -f /dev/null
+      networks:
+        hosts-network:
+          ipv4_address: 20.0.0.13
+          ipv6_address: 2002::13
+  
+networks:
+    dns-network:
+      driver: bridge
+      enable_ipv6: true
+      ipam:
+        driver: default
+        config:
+        - subnet: 10.0.0.0/24
+        - subnet: 2001::/64
+    hosts-network:
+      driver: bridge
+      enable_ipv6: true
+      ipam:
+        driver: default
+        config:
+        - subnet: 20.0.0.0/24
+        - subnet: 2002::/64
+    cluster-network:
+      driver: macvlan
+      enable_ipv6: true
+      driver_opts: 
+        parent: mac0
+      ipam:
+        driver: default
+        config:
+        - subnet: 30.0.0.0/24       
+        - subnet: 2003::/64
+  

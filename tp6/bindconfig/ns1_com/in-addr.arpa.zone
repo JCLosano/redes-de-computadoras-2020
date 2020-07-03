@@ -1,0 +1,17 @@
+$ORIGIN in-addr.arpa.
+$TTL 86400
+@	IN	SOA	ns1.strapi.com.	hostmaster.strapi.com. (
+			2001062501 ; serial
+			21600      ; refresh after 6 hours
+			3600       ; retry after 1 hour
+			604800     ; expire after 1 week
+			86400 )    ; minimum TTL of 1 day
+@           IN  NS      ns1.strapi.com.
+;
+;
+12.0.0.10   IN  PTR     ns1.strapi.com.
+12.0.0.30	IN	PTR	    strapi.strapi.com.
+
+
+
+

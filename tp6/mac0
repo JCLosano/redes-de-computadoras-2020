@@ -1,0 +1,7 @@
+sudo ip link add mac0 type bridge
+sleep 0.1
+sudo ip link set mac0 up
+sleep 0.1
+sudo ip link set mac0 promisc on 
+
+

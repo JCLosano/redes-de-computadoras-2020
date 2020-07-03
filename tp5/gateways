@@ -1,0 +1,16 @@
+
+docker exec -ti pc1 route del default
+docker exec -ti pc1 route add default gw 20.0.0.11
+docker exec -ti pc2 route del default
+docker exec -ti pc2 route add default gw 20.0.0.11
+docker exec -ti pc3 route del default
+docker exec -ti pc3 route add default gw 30.0.0.11
+docker exec -ti primario_com route del default
+docker exec -ti primario_com route add default gw 30.0.0.11
+docker exec -ti primario_edu route del default
+docker exec -ti primario_edu route add default gw 20.0.0.11
+docker exec -ti secundario_edu route del default
+docker exec -ti secundario_edu route add default gw 20.0.0.11
+docker exec -ti root route del default
+docker exec -ti root route add default gw 10.0.0.11
+docker exec -ti r1 route del default

@@ -1,0 +1,13 @@
+
+curl --cacert strapi.crt -d "@auth.json" -H "Content-Type: application/json" -X POST https://strapi.strapi.com/auth/local/register
+
+curl --cacert strapi.crt -d "@post.json" -H "Content-Type: application/json" -H "Authorization: Bearer TOKEN" -X POST https://strapi.strapi.com/alumnos
+
+curl --cacert strapi.crt https://strapi.strapi.com/alumnos
+
+curl --cacert strapi.crt -H "Authorization: Bearer TOKEN"  https://strapi.strapi.com/alumnos
+
+curl --cacert strapi.crt -d "@post.json" -H "Content-Type: application/json" -H "Authorization: Bearer TOKEN" -X DELETE https://strapi.strapi.com/alumnos/ID
+
+
+
