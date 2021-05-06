@@ -1,0 +1,286 @@
+version: '2.1'
+
+services:
+  r1:
+    build: ./bgp/.
+    volumes:
+      - ./volumes/bgp/r1/zebra.conf:/etc/quagga/zebra.conf:ro
+      - ./volumes/bgp/r1/ospfd.conf:/etc/quagga/ospfd.conf:ro
+      - ./volumes/bgp/r1/ospf6d.conf:/etc/quagga/ospf6d.conf:ro
+      - ./volumes/bgp/r1/bgpd.conf:/etc/quagga/bgpd.conf:ro
+      - ./volumes/bgp/supervisord.conf:/etc/supervisord.conf:ro
+    image: bgp:20180508
+    privileged: true
+    ports:
+      #admin
+      - 10101:2601
+      #ospf ipv4
+      - 10102:2604
+      #ospf ipv6
+      - 10103:2606
+      #bgp
+      - 10104:2605
+    networks:
+      oam14:
+        ipv4_address: 192.168.14.11
+        ipv6_address: 2001:a:b:14::11
+      oam15:
+        ipv4_address: 192.168.15.11
+        ipv6_address: 2001:a:b:15::11 
+      oam12:
+        ipv4_address: 192.168.12.11
+        ipv6_address: 2001:a:b:12::11
+      oam13:
+        ipv4_address: 192.168.13.11
+        ipv6_address: 2001:a:b:13::11
+  r4:
+    build: ./bgp/.
+    volumes:
+      - ./volumes/bgp/r4/zebra.conf:/etc/quagga/zebra.conf:ro
+      - ./volumes/bgp/r4/ospfd.conf:/etc/quagga/ospfd.conf:ro
+      - ./volumes/bgp/r4/ospf6d.conf:/etc/quagga/ospf6d.conf:ro
+      - ./volumes/bgp/r4/bgpd.conf:/etc/quagga/bgpd.conf:ro
+      - ./volumes/bgp/supervisord.conf:/etc/supervisord.conf:ro
+    image: bgp:20180508
+    privileged: true
+    ports:
+      #admin
+      - 10401:2601
+      #ospf ipv4
+      - 10402:2604
+      #ospf ipv6
+      - 10403:2606
+      #bgp
+      - 10404:2605
+    networks:
+      oam14:
+        ipv4_address: 192.168.14.41
+        ipv6_address: 2001:a:b:14::41
+      oam45:
+        ipv4_address: 192.168.45.11
+        ipv6_address: 2001:a:b:45::11
+      nr4:
+        ipv4_address: 10.0.4.11
+        ipv6_address: 2004:a:b:4::11
+
+  r5:
+    build: ./bgp/.
+    volumes:
+      - ./volumes/bgp/r5/zebra.conf:/etc/quagga/zebra.conf:ro
+      - ./volumes/bgp/r5/ospfd.conf:/etc/quagga/ospfd.conf:ro
+      - ./volumes/bgp/r5/ospf6d.conf:/etc/quagga/ospf6d.conf:ro
+      - ./volumes/bgp/r5/bgpd.conf:/etc/quagga/bgpd.conf:ro
+      - ./volumes/bgp/supervisord.conf:/etc/supervisord.conf:ro
+    image: bgp:20180508
+    privileged: true
+    ports:
+      #admin
+      - 10501:2601
+      #ospf ipv4
+      - 10502:2604
+      #ospf ipv6
+      - 10503:2606
+      #bgp
+      - 10504:2605
+    networks:
+      oam15:
+        ipv4_address: 192.168.15.51
+        ipv6_address: 2001:a:b:15::51
+      oam45:
+        ipv4_address: 192.168.45.54
+        ipv6_address: 2001:a:b:45::54
+      nr5:
+        ipv4_address: 10.0.5.11
+        ipv6_address: 2005:a:b:5::11
+          
+  r2:
+    build: ./ospf/.
+    volumes:
+      - ./volumes/ospf/r2/zebra.conf:/etc/quagga/zebra.conf:ro
+      - ./volumes/ospf/r2/ospfd.conf:/etc/quagga/ospfd.conf:ro
+      - ./volumes/ospf/r2/ospf6d.conf:/etc/quagga/ospf6d.conf:ro
+      - ./volumes/ospf/supervisord.conf:/etc/supervisord.conf:ro
+    image: ospf:20180508
+    privileged: true
+    ports:
+      #admin
+      - 10201:2601
+      #ospf ipv4
+      - 10202:2604
+      #ospf ipv6
+      - 10203:2606
+    networks:
+      oam12:
+        ipv4_address: 192.168.12.21
+        ipv6_address: 2001:a:b:12::21
+      oam23:
+        ipv4_address: 192.168.23.11
+        ipv6_address: 2001:a:b:23::11
+      nr2:
+        ipv4_address: 172.10.2.11
+        ipv6_address: 2002:a:b:2::11
+
+  r3:
+    build: ./ospf/.
+    volumes:
+      - ./volumes/ospf/r3/zebra.conf:/etc/quagga/zebra.conf:ro
+      - ./volumes/ospf/r3/ospfd.conf:/etc/quagga/ospfd.conf:ro
+      - ./volumes/ospf/r3/ospf6d.conf:/etc/quagga/ospf6d.conf:ro
+      - ./volumes/ospf/supervisord.conf:/etc/supervisord.conf:ro
+    image: ospf:20180508
+    privileged: true
+    ports:
+      #admin
+      - 10301:2601
+      #ospf ipv4
+      - 10302:2604
+      #ospf ipv6
+      - 10303:2606
+    networks:
+      oam23:
+        ipv4_address: 192.168.23.32
+        ipv6_address: 2001:a:b:23::32
+      oam13:
+        ipv4_address: 192.168.13.31
+        ipv6_address: 2001:a:b:13::31
+      nr3:
+        ipv4_address: 10.0.3.11
+        ipv6_address: 2003:a:b:3::11 
+
+  h1:
+    image: alpine:latest
+    command: top
+    privileged: true
+    networks:
+      nr3:
+        ipv4_address: 10.0.3.12
+        ipv6_address: 2003:a:b:3::12
+
+  h2:
+    image: alpine:latest
+    command: top
+    privileged: true
+    networks:
+      nr4:
+        ipv4_address: 10.0.4.12
+        ipv6_address: 2004:a:b:4::12
+
+  h3:
+    image: xueshanf/swaks
+    command: tail -f /dev/null
+    tty: true
+    privileged: true
+    networks:
+      nr5:
+        ipv4_address: 10.0.5.12
+        ipv6_address: 2005:a:b:5::12
+
+  web_server:   
+#    image: nginxdemos/hello
+    build: ./nginx/.
+    privileged: true
+    user: root
+    ports:
+      - 8000:80
+    networks: 
+      nr2:
+        ipv4_address: 172.10.2.12
+        ipv6_address: 2002:a:b:2::12
+
+  mail_server:
+    image: mailhog/mailhog
+    privileged: true
+    user: root
+    ports:
+      # SMTP
+      # - 1025:1025
+      # Web UI
+      - 8025:8025
+    networks:
+      nr2:
+        ipv4_address: 172.10.2.14
+        ipv6_address: 2002:a:b:2::14
+
+networks:
+  oam14:
+    driver: "bridge"
+    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.14.0/24
+        - subnet: 2001:a:b:14::/64
+  oam15:
+    driver: "bridge"
+    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.15.0/24
+        - subnet: 2001:a:b:15::/64
+  oam45:
+    driver: "bridge"
+    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.45.0/24
+        - subnet: 2001:a:b:45::/64
+  oam12:
+    driver: "bridge"
+    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.12.0/24
+        - subnet: 2001:a:b:12::/64
+  oam23:
+    driver: "bridge"
+    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.23.0/24
+        - subnet: 2001:a:b:23::/64
+  oam13:
+    driver: "bridge"
+    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.13.0/24
+        - subnet: 2001:a:b:13::/64
+  nr2:
+    driver: "bridge"
+    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.10.2.0/24
+        - subnet: 2002:a:b:2::/64
+  nr3:
+    driver: "bridge"
+    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.0.3.0/24
+        - subnet: 2003:a:b:3::/64
+  nr4:
+    driver: "bridge"
+    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.0.4.0/24
+        - subnet: 2004:a:b:4::/64
+  nr5:
+    driver: "bridge"
+    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.0.5.0/24
+        - subnet: 2005:a:b:5::/64
+  
+
