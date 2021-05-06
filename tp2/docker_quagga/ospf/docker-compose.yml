@@ -1,0 +1,255 @@
+version: '2.1'
+
+services:
+  r1:
+    build: .
+    volumes:
+      - ./volumes/quagga/r1/zebra.conf:/etc/quagga/zebra.conf:ro
+      - ./volumes/quagga/r1/ospfd.conf:/etc/quagga/ospfd.conf:ro
+      - ./volumes/quagga/r1/ospf6d.conf:/etc/quagga/ospf6d.conf:ro
+      - ./volumes/supervisord.conf:/etc/supervisord.conf:ro
+    image: ospf:20190321
+    privileged: true
+    ports:
+      #admin
+      - 10011:2601
+      #ospf
+      - 10012:2604
+      #ospf ipv6
+      - 10013:2606
+    networks:
+#      lo:
+#       ipv4_address: 20.0.0.11
+#        ipv6_address:
+      oam12:
+        ipv4_address: 192.168.12.11
+#        ipv6_address: 2001::11
+      oam13:
+        ipv4_address: 192.168.13.11
+#        ipv6_address: 2001:aaaa:aaaa::11
+
+  r2:
+    build: .
+    volumes:
+      - ./volumes/quagga/r2/zebra.conf:/etc/quagga/zebra.conf:ro
+      - ./volumes/quagga/r2/ospfd.conf:/etc/quagga/ospfd.conf:ro
+      - ./volumes/quagga/r2/ospf6d.conf:/etc/quagga/ospf6d.conf:ro
+      - ./volumes/supervisord.conf:/etc/supervisord.conf:ro
+    image: ospf:20190321
+    privileged: true
+    ports:
+      #admin
+      - 10021:2601
+      #ospf
+      - 10022:2604
+      #ospf ipv6
+      - 10023:2606
+    networks:
+      oam12:
+        ipv4_address: 192.168.12.21
+#        ipv6_address: 2001::12
+      oam23:
+        ipv4_address: 192.168.23.11
+#        ipv6_address: 2001::12
+      nr2:
+        ipv4_address: 10.0.2.11
+#        ipv6_address: 2001:bbbb:bbbb::11
+
+  r3:
+    build: .
+    volumes:
+      - ./volumes/quagga/r3/zebra.conf:/etc/quagga/zebra.conf:ro
+      - ./volumes/quagga/r3/ospfd.conf:/etc/quagga/ospfd.conf:ro
+      - ./volumes/quagga/r3/ospf6d.conf:/etc/quagga/ospf6d.conf:ro
+      - ./volumes/supervisord.conf:/etc/supervisord.conf:ro
+    image: ospf:20190321
+    privileged: true
+    ports:
+      #admin
+      - 10031:2601
+      #ospf
+      - 10032:2604
+      #ospf ipv6
+      - 10033:2606
+    networks:
+      oam13:
+        ipv4_address: 192.168.13.31
+#        ipv6_address: 2001::12
+      oam23:
+        ipv4_address: 192.168.23.32
+#        ipv6_address: 2001::12
+      oam34:
+        ipv4_address: 192.168.34.11
+#        ipv6_address: 2001::12
+      oam35:
+        ipv4_address: 192.168.35.11
+#        ipv6_address: 2001::12
+
+  r4:
+    build: .
+    volumes:
+      - ./volumes/quagga/r4/zebra.conf:/etc/quagga/zebra.conf:ro
+      - ./volumes/quagga/r4/ospfd.conf:/etc/quagga/ospfd.conf:ro
+      - ./volumes/quagga/r4/ospf6d.conf:/etc/quagga/ospf6d.conf:ro
+      - ./volumes/supervisord.conf:/etc/supervisord.conf:ro
+    image: ospf:20190321
+    privileged: true
+    ports:
+      #admin
+      - 10041:2601
+      #ospf
+      - 10042:2604
+      #ospf ipv6
+      - 10043:2606
+    networks:
+      oam34:
+        ipv4_address: 192.168.34.43
+#        ipv6_address: 2001::12
+      oam45:
+        ipv4_address: 192.168.45.11
+#        ipv6_address: 2001::12
+      nr4:
+        ipv4_address: 10.0.4.11
+#        ipv6_address: 2001:bbbb:bbbb::11
+
+  r5:
+    build: .
+    volumes:
+      - ./volumes/quagga/r5/zebra.conf:/etc/quagga/zebra.conf:ro
+      - ./volumes/quagga/r5/ospfd.conf:/etc/quagga/ospfd.conf:ro
+      - ./volumes/quagga/r5/ospf6d.conf:/etc/quagga/ospf6d.conf:ro
+      - ./volumes/supervisord.conf:/etc/supervisord.conf:ro
+    image: ospf:20190321
+    privileged: true
+    ports:
+      #admin
+      - 10051:2601
+      #ospf
+      - 10052:2604
+      #ospf ipv6
+      - 10053:2606
+    networks:
+      oam35:
+        ipv4_address: 192.168.35.53
+#        ipv6_address: 2001::12
+      oam45:
+        ipv4_address: 192.168.45.54
+#        ipv6_address: 2001::12
+      nr5:
+        ipv4_address: 10.0.5.11
+#        ipv6_address: 2001:bbbb:bbbb::11
+
+  h1:
+    image: alpine:latest
+    command: top
+    networks:
+      nr2:
+        ipv4_address: 10.0.2.12
+        #ipv6_address: 2001:aaaa:aaaa::12
+
+  h2:
+    image: alpine:latest
+    command: top
+    networks:
+      nr2:
+        ipv4_address: 10.0.2.13
+       # ipv6_address: 2001:aaaa:aaaa::12
+
+  h3:
+    image: alpine:latest
+    command: top
+    networks:
+      nr2:
+        ipv4_address: 10.0.2.14
+        #ipv6_address: 2001:aaaa:aaaa::12
+
+  h4:
+    image: alpine:latest
+    command: top
+    networks:
+      nr4:
+        ipv4_address: 10.0.4.12
+       # ipv6_address: 2001:aaaa:aaaa::12
+
+  h5:
+    image: alpine:latest
+    command: top
+    networks:
+      nr5:
+        ipv4_address: 10.0.5.12
+       # ipv6_address: 2001:aaaa:aaaa::12
+
+networks:
+  oam12:
+    driver: "bridge"
+#    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.12.0/24
+#        - subnet: 2001::/64
+  oam13:
+    driver: "bridge"
+#    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.13.0/24
+#        - subnet: 2001::/64
+  oam23:
+    driver: "bridge"
+#   enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.23.0/24
+#       - subnet: 2001::/64
+  oam34:
+    driver: "bridge"
+#    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.34.0/24
+#        - subnet: 2001::/64
+  oam35:
+    driver: "bridge"
+#    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.35.0/24
+#        - subnet: 2001::/64
+  oam45:
+    driver: "bridge"
+#    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.45.0/24
+#        - subnet: 2001::/64
+  nr2:
+    driver: "bridge"
+#    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.0.2.0/24
+#        - subnet: 2001:aaaa:aaaa::/64
+  nr4:
+    driver: "bridge"
+#    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.0.4.0/24
+#        - subnet: 2001:bbbb:bbbb::/64
+
+  nr5:
+    driver: "bridge"
+#    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.0.5.0/24
+#        - subnet: 2001:bbbb:bbbb::/64
